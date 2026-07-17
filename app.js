@@ -148,19 +148,8 @@ function openChecklist(courseId) {
   const body = document.getElementById("checklist-body");
   body.innerHTML = "";
 
-  const commonLabel = document.createElement("p");
-  commonLabel.className = "section-label";
-  commonLabel.textContent = "共通";
-  body.appendChild(commonLabel);
-  checklistData.common.forEach(name => body.appendChild(makeCheckItem(name)));
-
-  if (courseItems.length > 0) {
-    const courseLabel = document.createElement("p");
-    courseLabel.className = "section-label";
-    courseLabel.textContent = meta.label;
-    body.appendChild(courseLabel);
-    courseItems.forEach(name => body.appendChild(makeCheckItem(name)));
-  }
+  const allItems = [...checklistData.common, ...courseItems];
+  allItems.forEach(name => body.appendChild(makeCheckItem(name)));
 
   updateStartButton();
   showScreen("checklist");
