@@ -31,6 +31,69 @@ document.querySelectorAll("#mode-toggle .segmented-btn").forEach(btn => {
 
 applyAppearanceSettings();
 
+// 進行中セッションの管理(出発後、ゴールするまでの状態)
+
+function getActiveSession() {
+  const raw = localStorage.getItem("activeSession");
+  return raw ? JSON.parse(raw) : null;
+}
+
+function setActiveSession(courseId) {
+  localStorage.setItem("activeSession", JSON.stringify({
+    courseId,
+    startedAt: new Date().toISOString()
+  }));
+}
+
+function clearActiveSession() {
+  localStorage.removeItem("activeSession");
+}
+
+let currentCourseId = null;
+let pendingCourseId = null;
+
+function attemptOpenCourse(courseId) {
+  const session = getActiveSession();
+  if (session) {
+    pendingCourseId = courseId;
+    showConfirmDialog(session.courseId);
+  } else {
+    openChecklist(courseId);
+  }
+}
+
+function showConfirmDialog(activeCourseId) {
+  const label = courses[activeCourseId] ? courses[activeCourseId].label : "前回のコース";
+  document.getElementById("dialog-text").textContent =
+    `前回の「${label}」がまだ終わっていません。終わらせてから始めますか？`;
+  document.getElementById("dialog-overlay").classList.remove("hidden");
+}
+
+function hideConfirmDialog() {
+  document.getElementById("dialog-overlay").classList.add("hidden");
+}
+
+document.getElementById("dialog-continue").addEventListener("click", () => {
+  hideConfirmDialog();
+  const session = getActiveSession();
+  showGoalScreen(session ? session.courseId : null);
+});
+
+document.getElementById("dialog-discard").addEventListener("click", () => {
+  hideConfirmDialog();
+  clearActiveSession();
+  if (pendingCourseId) {
+    openChecklist(pendingCourseId);
+    pendingCourseId = null;
+  }
+});
+
+function showGoalScreen(courseId) {
+  const label = courses[courseId] ? courses[courseId].label : "";
+  document.getElementById("goal-sub").textContent = label ? `${label}、ゴール` : "ゴール";
+  showScreen("goal");
+}
+
 // ステップ1: 画面遷移とデータ構造の骨組み(保存機能はまだなし)
 
 const commonItems = ["財布", "鍵", "スマホ"];
@@ -51,12 +114,13 @@ function renderHome() {
     const btn = document.createElement("button");
     btn.className = "course-btn";
     btn.innerHTML = `<span class="course-icon">${course.icon}</span><span>${course.label}</span>`;
-    btn.addEventListener("click", () => openChecklist(id));
+    btn.addEventListener("click", () => attemptOpenCourse(id));
     list.appendChild(btn);
   });
 }
 
 function openChecklist(courseId) {
+  currentCourseId = courseId;
   const course = courses[courseId];
   checkedState = {};
 
@@ -110,12 +174,21 @@ function showScreen(name) {
 }
 
 document.getElementById("btn-start").addEventListener("click", () => {
+  setActiveSession(currentCourseId);
   showScreen("departure");
 });
 document.getElementById("btn-departure-ok").addEventListener("click", () => showScreen("home"));
-document.getElementById("btn-goal-ok").addEventListener("click", () => showScreen("home"));
+document.getElementById("btn-goal-ok").addEventListener("click", () => {
+  clearActiveSession();
+  showScreen("home");
+});
 document.getElementById("btn-back-home").addEventListener("click", () => showScreen("home"));
 document.getElementById("btn-back-home-2").addEventListener("click", () => showScreen("home"));
 document.getElementById("btn-settings").addEventListener("click", () => showScreen("settings"));
 
 renderHome();
+
+const existingSession = getActiveSession();
+if (existingSession) {
+  showGoalScreen(existingSession.courseId);
+}

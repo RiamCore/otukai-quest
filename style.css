@@ -219,6 +219,59 @@ h1 {
   color: #fff;
 }
 
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+
+.dialog-overlay.hidden {
+  display: none;
+}
+
+.dialog-box {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 28px 24px;
+  max-width: 360px;
+  width: 100%;
+}
+
+.dialog-text {
+  font-size: 19px;
+  color: var(--text);
+  text-align: center;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.dialog-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dialog-btn {
+  height: 60px;
+  font-size: 19px;
+  font-weight: 700;
+  border-radius: 14px;
+  border: 2px solid var(--border-color);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.dialog-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 .big-emoji {
   font-size: 64px;
   margin: 0;

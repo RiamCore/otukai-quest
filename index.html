@@ -49,7 +49,7 @@
 <section id="screen-goal" class="screen hidden">
   <div class="page center">
     <p class="goal-text">お疲れ様でした！</p>
-    <p class="goal-sub">ゴール</p>
+    <p class="goal-sub" id="goal-sub">ゴール</p>
     <button class="primary-btn" id="btn-goal-ok">ホームへ戻る</button>
   </div>
 </section>
@@ -75,6 +75,17 @@
     <p class="sub" style="margin-top:24px;">項目の追加・削除・並び替えは後のステップで実装します。</p>
   </div>
 </section>
+
+<!-- 進行中コース確認ダイアログ -->
+<div id="dialog-overlay" class="dialog-overlay hidden">
+  <div class="dialog-box">
+    <p class="dialog-text" id="dialog-text"></p>
+    <div class="dialog-buttons">
+      <button id="dialog-continue" class="dialog-btn dialog-btn-primary">続ける</button>
+      <button id="dialog-discard" class="dialog-btn">破棄して新しく始める</button>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>
