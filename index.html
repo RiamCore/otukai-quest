@@ -72,7 +72,25 @@
       <button class="segmented-btn" data-value="elderly">高齢者モード</button>
     </div>
 
-    <p class="sub" style="margin-top:24px;">項目の追加・削除・並び替えは後のステップで実装します。</p>
+    <p class="setting-label">共通チェック項目</p>
+    <div id="common-items-list" class="edit-list"></div>
+    <div class="add-row">
+      <input type="text" id="common-add-input" placeholder="新しい項目名" maxlength="20">
+      <button id="common-add-btn" class="add-btn">＋追加</button>
+    </div>
+
+    <p class="setting-label">コース別チェック項目</p>
+    <div class="segmented" id="course-edit-tabs">
+      <button class="segmented-btn" data-course="shopping">買い物</button>
+      <button class="segmented-btn" data-course="hospital">病院</button>
+      <button class="segmented-btn" data-course="walk">散歩</button>
+      <button class="segmented-btn" data-course="outing">お出かけ</button>
+    </div>
+    <div id="course-items-list" class="edit-list"></div>
+    <div class="add-row">
+      <input type="text" id="course-add-input" placeholder="新しい項目名" maxlength="20">
+      <button id="course-add-btn" class="add-btn">＋追加</button>
+    </div>
   </div>
 </section>
 

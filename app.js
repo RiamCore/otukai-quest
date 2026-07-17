@@ -63,7 +63,7 @@ function attemptOpenCourse(courseId) {
 }
 
 function showConfirmDialog(activeCourseId) {
-  const label = courses[activeCourseId] ? courses[activeCourseId].label : "前回のコース";
+  const label = courseMeta[activeCourseId] ? courseMeta[activeCourseId].label : "前回のコース";
   document.getElementById("dialog-text").textContent =
     `前回の「${label}」がまだ終わっていません。終わらせてから始めますか？`;
   document.getElementById("dialog-overlay").classList.remove("hidden");
@@ -89,31 +89,50 @@ document.getElementById("dialog-discard").addEventListener("click", () => {
 });
 
 function showGoalScreen(courseId) {
-  const label = courses[courseId] ? courses[courseId].label : "";
+  const label = courseMeta[courseId] ? courseMeta[courseId].label : "";
   document.getElementById("goal-sub").textContent = label ? `${label}、ゴール` : "ゴール";
   showScreen("goal");
 }
 
-// ステップ1: 画面遷移とデータ構造の骨組み(保存機能はまだなし)
+// チェック項目データ(共通項目・コース項目)。localStorageに保存し、設定画面で編集可能にする
 
-const commonItems = ["財布", "鍵", "スマホ"];
-
-const courses = {
-  shopping: { label: "買い物", icon: "🛒", items: ["エコバッグ"] },
-  hospital: { label: "病院", icon: "🏥", items: ["保険証", "診察券", "お薬手帳"] },
-  walk:     { label: "散歩", icon: "🚶", items: ["水筒", "帽子"] },
-  outing:   { label: "お出かけ", icon: "🎉", items: [] },
+const courseMeta = {
+  shopping: { label: "買い物", icon: "🛒" },
+  hospital: { label: "病院", icon: "🏥" },
+  walk:     { label: "散歩", icon: "🚶" },
+  outing:   { label: "お出かけ", icon: "🎉" },
 };
 
+const defaultChecklistData = {
+  common: ["財布", "鍵", "スマホ"],
+  courses: {
+    shopping: ["エコバッグ"],
+    hospital: ["保険証", "診察券", "お薬手帳"],
+    walk: ["水筒", "帽子"],
+    outing: [],
+  },
+};
+
+function loadChecklistData() {
+  const raw = localStorage.getItem("checklistData");
+  if (raw) return JSON.parse(raw);
+  return JSON.parse(JSON.stringify(defaultChecklistData));
+}
+
+function saveChecklistData() {
+  localStorage.setItem("checklistData", JSON.stringify(checklistData));
+}
+
+let checklistData = loadChecklistData();
 let checkedState = {};
 
 function renderHome() {
   const list = document.getElementById("course-list");
   list.innerHTML = "";
-  Object.entries(courses).forEach(([id, course]) => {
+  Object.entries(courseMeta).forEach(([id, meta]) => {
     const btn = document.createElement("button");
     btn.className = "course-btn";
-    btn.innerHTML = `<span class="course-icon">${course.icon}</span><span>${course.label}</span>`;
+    btn.innerHTML = `<span class="course-icon">${meta.icon}</span><span>${meta.label}</span>`;
     btn.addEventListener("click", () => attemptOpenCourse(id));
     list.appendChild(btn);
   });
@@ -121,10 +140,11 @@ function renderHome() {
 
 function openChecklist(courseId) {
   currentCourseId = courseId;
-  const course = courses[courseId];
+  const meta = courseMeta[courseId];
+  const courseItems = checklistData.courses[courseId];
   checkedState = {};
 
-  document.getElementById("checklist-title").textContent = course.label;
+  document.getElementById("checklist-title").textContent = meta.label;
   const body = document.getElementById("checklist-body");
   body.innerHTML = "";
 
@@ -132,14 +152,14 @@ function openChecklist(courseId) {
   commonLabel.className = "section-label";
   commonLabel.textContent = "共通";
   body.appendChild(commonLabel);
-  commonItems.forEach(name => body.appendChild(makeCheckItem(name)));
+  checklistData.common.forEach(name => body.appendChild(makeCheckItem(name)));
 
-  if (course.items.length > 0) {
+  if (courseItems.length > 0) {
     const courseLabel = document.createElement("p");
     courseLabel.className = "section-label";
-    courseLabel.textContent = course.label;
+    courseLabel.textContent = meta.label;
     body.appendChild(courseLabel);
-    course.items.forEach(name => body.appendChild(makeCheckItem(name)));
+    courseItems.forEach(name => body.appendChild(makeCheckItem(name)));
   }
 
   updateStartButton();
@@ -192,3 +212,104 @@ const existingSession = getActiveSession();
 if (existingSession) {
   showGoalScreen(existingSession.courseId);
 }
+
+// 設定画面: 項目の追加・削除・並び替え
+
+function swapItems(arr, i, j) {
+  const tmp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = tmp;
+}
+
+function renderEditList(containerId, items, onDelete, onMoveUp, onMoveDown) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  items.forEach((name, idx) => {
+    const row = document.createElement("div");
+    row.className = "edit-item";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "edit-item-name";
+    nameSpan.textContent = name;
+    row.appendChild(nameSpan);
+
+    const upBtn = document.createElement("button");
+    upBtn.className = "edit-icon-btn";
+    upBtn.textContent = "↑";
+    upBtn.disabled = idx === 0;
+    upBtn.addEventListener("click", () => onMoveUp(idx));
+    row.appendChild(upBtn);
+
+    const downBtn = document.createElement("button");
+    downBtn.className = "edit-icon-btn";
+    downBtn.textContent = "↓";
+    downBtn.disabled = idx === items.length - 1;
+    downBtn.addEventListener("click", () => onMoveDown(idx));
+    row.appendChild(downBtn);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "edit-icon-btn edit-delete";
+    delBtn.textContent = "✕";
+    delBtn.addEventListener("click", () => onDelete(idx));
+    row.appendChild(delBtn);
+
+    container.appendChild(row);
+  });
+}
+
+function renderCommonEditList() {
+  renderEditList(
+    "common-items-list",
+    checklistData.common,
+    (idx) => { checklistData.common.splice(idx, 1); saveChecklistData(); renderCommonEditList(); },
+    (idx) => { swapItems(checklistData.common, idx, idx - 1); saveChecklistData(); renderCommonEditList(); },
+    (idx) => { swapItems(checklistData.common, idx, idx + 1); saveChecklistData(); renderCommonEditList(); }
+  );
+}
+
+let selectedEditCourse = "shopping";
+
+function renderCourseEditList() {
+  const items = checklistData.courses[selectedEditCourse];
+  renderEditList(
+    "course-items-list",
+    items,
+    (idx) => { items.splice(idx, 1); saveChecklistData(); renderCourseEditList(); },
+    (idx) => { swapItems(items, idx, idx - 1); saveChecklistData(); renderCourseEditList(); },
+    (idx) => { swapItems(items, idx, idx + 1); saveChecklistData(); renderCourseEditList(); }
+  );
+}
+
+document.querySelectorAll("#course-edit-tabs .segmented-btn").forEach(btn => {
+  btn.classList.toggle("active", btn.dataset.course === selectedEditCourse);
+  btn.addEventListener("click", () => {
+    selectedEditCourse = btn.dataset.course;
+    document.querySelectorAll("#course-edit-tabs .segmented-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.course === selectedEditCourse);
+    });
+    renderCourseEditList();
+  });
+});
+
+document.getElementById("common-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("common-add-input");
+  const val = input.value.trim();
+  if (!val) return;
+  checklistData.common.push(val);
+  input.value = "";
+  saveChecklistData();
+  renderCommonEditList();
+});
+
+document.getElementById("course-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("course-add-input");
+  const val = input.value.trim();
+  if (!val) return;
+  checklistData.courses[selectedEditCourse].push(val);
+  input.value = "";
+  saveChecklistData();
+  renderCourseEditList();
+});
+
+renderCommonEditList();
+renderCourseEditList();

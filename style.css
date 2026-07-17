@@ -23,6 +23,7 @@
   --sub-font: 16px;
   --primary-btn-height: 68px;
   --primary-btn-font: 22px;
+  --message-font: 36px;
 }
 
 body.dark {
@@ -47,6 +48,7 @@ body.elderly {
   --sub-font: 20px;
   --primary-btn-height: 88px;
   --primary-btn-font: 28px;
+  --message-font: 46px;
 }
 
 html, body {
@@ -272,13 +274,88 @@ h1 {
   color: #fff;
 }
 
+.edit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.edit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.edit-item-name {
+  flex: 1;
+  font-size: 18px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.edit-icon-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.edit-icon-btn:disabled {
+  opacity: 0.3;
+}
+
+.edit-delete {
+  color: #c0392b;
+}
+
+.add-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.add-row input {
+  flex: 1;
+  height: 52px;
+  font-size: 17px;
+  padding: 0 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.add-btn {
+  height: 52px;
+  padding: 0 18px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
 .big-emoji {
   font-size: 64px;
   margin: 0;
 }
 
 .departure-text, .goal-text {
-  font-size: 28px;
+  font-size: var(--message-font);
   font-weight: 700;
   margin: 12px 0 4px;
 }
