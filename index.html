@@ -54,12 +54,25 @@
   </div>
 </section>
 
-<!-- 設定画面(ステップ1では簡易プレースホルダー) -->
+<!-- 設定画面 -->
 <section id="screen-settings" class="screen hidden">
   <div class="page">
     <button class="back-btn" id="btn-back-home-2">← ホームへ</button>
     <h1>設定</h1>
-    <p class="sub">項目の追加・削除・並び替えは後のステップで実装します。</p>
+
+    <p class="setting-label">表示モード</p>
+    <div class="segmented" id="theme-toggle">
+      <button class="segmented-btn" data-value="light">ライト</button>
+      <button class="segmented-btn" data-value="dark">ダーク</button>
+    </div>
+
+    <p class="setting-label">文字・ボタンサイズ</p>
+    <div class="segmented" id="mode-toggle">
+      <button class="segmented-btn" data-value="normal">通常</button>
+      <button class="segmented-btn" data-value="elderly">高齢者モード</button>
+    </div>
+
+    <p class="sub" style="margin-top:24px;">項目の追加・削除・並び替えは後のステップで実装します。</p>
   </div>
 </section>
 

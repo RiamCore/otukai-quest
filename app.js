@@ -1,3 +1,36 @@
+// 表示モード(ライト/ダーク)と文字・ボタンサイズ(通常/高齢者)の設定
+
+function applyAppearanceSettings() {
+  const theme = localStorage.getItem("theme") || "light";
+  const mode = localStorage.getItem("uiMode") || "normal";
+
+  document.body.classList.toggle("dark", theme === "dark");
+  document.body.classList.toggle("elderly", mode === "elderly");
+
+  document.querySelectorAll("#theme-toggle .segmented-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.value === theme);
+  });
+  document.querySelectorAll("#mode-toggle .segmented-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.value === mode);
+  });
+}
+
+document.querySelectorAll("#theme-toggle .segmented-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    localStorage.setItem("theme", btn.dataset.value);
+    applyAppearanceSettings();
+  });
+});
+
+document.querySelectorAll("#mode-toggle .segmented-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    localStorage.setItem("uiMode", btn.dataset.value);
+    applyAppearanceSettings();
+  });
+});
+
+applyAppearanceSettings();
+
 // ステップ1: 画面遷移とデータ構造の骨組み(保存機能はまだなし)
 
 const commonItems = ["財布", "鍵", "スマホ"];
