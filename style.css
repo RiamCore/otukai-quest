@@ -1,0 +1,161 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #FAFAF7;
+  color: #222;
+  font-family: -apple-system, "Hiragino Sans", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: max(24px, env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.page.center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 8px 0 4px;
+  text-align: center;
+}
+
+.sub {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin: 0 0 24px;
+}
+
+.home-header {
+  margin-top: 12px;
+}
+
+.course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.course-btn {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  height: 84px;
+  padding: 0 24px;
+  font-size: 22px;
+  font-weight: 700;
+  background: #fff;
+  border: 2px solid #ddd8c8;
+  border-radius: 18px;
+  color: #222;
+}
+
+.course-btn:active {
+  background: #F0EEE3;
+}
+
+.course-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.settings-btn {
+  margin-top: 20px;
+  height: 56px;
+  font-size: 17px;
+  color: #666;
+  background: transparent;
+  border: none;
+}
+
+.back-btn {
+  align-self: flex-start;
+  font-size: 17px;
+  color: #666;
+  background: transparent;
+  border: none;
+  padding: 8px 0 16px;
+}
+
+.section-label {
+  font-size: 14px;
+  color: #999;
+  margin: 20px 0 8px;
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+  padding: 0 18px;
+  border: 2px solid #ddd8c8;
+  border-radius: 14px;
+  font-size: 20px;
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+.check-item input[type="checkbox"] {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.primary-btn {
+  margin-top: auto;
+  height: 68px;
+  font-size: 22px;
+  font-weight: 700;
+  background: #1D9E75;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+}
+
+.primary-btn:disabled {
+  background: #D3D1C7;
+  color: #888780;
+}
+
+.big-emoji {
+  font-size: 64px;
+  margin: 0;
+}
+
+.departure-text, .goal-text {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 12px 0 4px;
+}
+
+.departure-sub, .goal-sub {
+  font-size: 20px;
+  color: #666;
+  margin: 0 0 32px;
+}

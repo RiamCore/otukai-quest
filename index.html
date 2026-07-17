@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="お出かけクエスト">
+<title>お出かけクエスト</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ホーム画面 -->
+<section id="screen-home" class="screen">
+  <div class="page">
+    <header class="home-header">
+      <h1>お出かけクエスト</h1>
+      <p class="sub">今日は何をしますか？</p>
+    </header>
+    <nav class="course-list" id="course-list">
+      <!-- JSでコースボタンを描画 -->
+    </nav>
+    <button class="settings-btn" id="btn-settings">設定</button>
+  </div>
+</section>
+
+<!-- チェックリスト画面 -->
+<section id="screen-checklist" class="screen hidden">
+  <div class="page">
+    <button class="back-btn" id="btn-back-home">← ホームへ</button>
+    <h1 id="checklist-title"></h1>
+    <div id="checklist-body"></div>
+    <button class="primary-btn" id="btn-start" disabled>開始</button>
+  </div>
+</section>
+
+<!-- 出発画面 -->
+<section id="screen-departure" class="screen hidden">
+  <div class="page center">
+    <p class="big-emoji">🎉</p>
+    <p class="departure-text">忘れ物なし！</p>
+    <p class="departure-sub">出発！</p>
+    <button class="primary-btn" id="btn-departure-ok">ホームへ戻る</button>
+  </div>
+</section>
+
+<!-- ゴール画面 -->
+<section id="screen-goal" class="screen hidden">
+  <div class="page center">
+    <p class="goal-text">お疲れ様でした！</p>
+    <p class="goal-sub">ゴール</p>
+    <button class="primary-btn" id="btn-goal-ok">ホームへ戻る</button>
+  </div>
+</section>
+
+<!-- 設定画面(ステップ1では簡易プレースホルダー) -->
+<section id="screen-settings" class="screen hidden">
+  <div class="page">
+    <button class="back-btn" id="btn-back-home-2">← ホームへ</button>
+    <h1>設定</h1>
+    <p class="sub">項目の追加・削除・並び替えは後のステップで実装します。</p>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
