@@ -31,6 +31,51 @@ document.querySelectorAll("#mode-toggle .segmented-btn").forEach(btn => {
 
 applyAppearanceSettings();
 
+// チェック項目データ(共通項目・コース一覧・コースごとの項目)。localStorageに保存し、設定画面で編集可能にする
+
+const defaultChecklistData = {
+  common: ["財布", "鍵", "スマホ"],
+  courseOrder: ["shopping", "hospital", "walk", "outing"],
+  courseMeta: {
+    shopping: { label: "買い物", icon: "🛒" },
+    hospital: { label: "病院", icon: "🏥" },
+    walk:     { label: "散歩", icon: "🚶" },
+    outing:   { label: "お出かけ", icon: "🎉" },
+  },
+  courseItems: {
+    shopping: ["エコバッグ"],
+    hospital: ["保険証", "診察券", "お薬手帳"],
+    walk: ["水筒", "帽子"],
+    outing: [],
+  },
+};
+
+function loadChecklistData() {
+  const raw = localStorage.getItem("checklistData");
+  if (!raw) return JSON.parse(JSON.stringify(defaultChecklistData));
+
+  const data = JSON.parse(raw);
+  // 古いバージョン(コース追加機能がなかった頃)のデータ形式からの移行
+  if (!data.courseMeta || !data.courseOrder || !data.courseItems) {
+    const oldCourses = data.courses || {};
+    data.courseMeta = JSON.parse(JSON.stringify(defaultChecklistData.courseMeta));
+    data.courseOrder = Object.keys(data.courseMeta);
+    data.courseItems = Object.keys(oldCourses).length > 0
+      ? oldCourses
+      : JSON.parse(JSON.stringify(defaultChecklistData.courseItems));
+    delete data.courses;
+  }
+  if (!data.common) data.common = [...defaultChecklistData.common];
+  return data;
+}
+
+function saveChecklistData() {
+  localStorage.setItem("checklistData", JSON.stringify(checklistData));
+}
+
+let checklistData = loadChecklistData();
+let checkedState = {};
+
 // 進行中セッションの管理(出発後、ゴールするまでの状態)
 
 function getActiveSession() {
@@ -63,7 +108,8 @@ function attemptOpenCourse(courseId) {
 }
 
 function showConfirmDialog(activeCourseId) {
-  const label = courseMeta[activeCourseId] ? courseMeta[activeCourseId].label : "前回のコース";
+  const meta = checklistData.courseMeta[activeCourseId];
+  const label = meta ? meta.label : "前回のコース";
   document.getElementById("dialog-text").textContent =
     `前回の「${label}」がまだ終わっていません。終わらせてから始めますか？`;
   document.getElementById("dialog-overlay").classList.remove("hidden");
@@ -89,47 +135,19 @@ document.getElementById("dialog-discard").addEventListener("click", () => {
 });
 
 function showGoalScreen(courseId) {
-  const label = courseMeta[courseId] ? courseMeta[courseId].label : "";
+  const meta = checklistData.courseMeta[courseId];
+  const label = meta ? meta.label : "";
   document.getElementById("goal-sub").textContent = label ? `${label}、ゴール` : "ゴール";
   showScreen("goal");
 }
 
-// チェック項目データ(共通項目・コース項目)。localStorageに保存し、設定画面で編集可能にする
-
-const courseMeta = {
-  shopping: { label: "買い物", icon: "🛒" },
-  hospital: { label: "病院", icon: "🏥" },
-  walk:     { label: "散歩", icon: "🚶" },
-  outing:   { label: "お出かけ", icon: "🎉" },
-};
-
-const defaultChecklistData = {
-  common: ["財布", "鍵", "スマホ"],
-  courses: {
-    shopping: ["エコバッグ"],
-    hospital: ["保険証", "診察券", "お薬手帳"],
-    walk: ["水筒", "帽子"],
-    outing: [],
-  },
-};
-
-function loadChecklistData() {
-  const raw = localStorage.getItem("checklistData");
-  if (raw) return JSON.parse(raw);
-  return JSON.parse(JSON.stringify(defaultChecklistData));
-}
-
-function saveChecklistData() {
-  localStorage.setItem("checklistData", JSON.stringify(checklistData));
-}
-
-let checklistData = loadChecklistData();
-let checkedState = {};
+// ホーム画面・チェックリスト画面
 
 function renderHome() {
   const list = document.getElementById("course-list");
   list.innerHTML = "";
-  Object.entries(courseMeta).forEach(([id, meta]) => {
+  checklistData.courseOrder.forEach(id => {
+    const meta = checklistData.courseMeta[id];
     const btn = document.createElement("button");
     btn.className = "course-btn";
     btn.innerHTML = `<span class="course-icon">${meta.icon}</span><span>${meta.label}</span>`;
@@ -140,8 +158,8 @@ function renderHome() {
 
 function openChecklist(courseId) {
   currentCourseId = courseId;
-  const meta = courseMeta[courseId];
-  const courseItems = checklistData.courses[courseId];
+  const meta = checklistData.courseMeta[courseId];
+  const courseItems = checklistData.courseItems[courseId];
   checkedState = {};
 
   document.getElementById("checklist-title").textContent = meta.label;
@@ -256,30 +274,6 @@ function renderCommonEditList() {
   );
 }
 
-let selectedEditCourse = "shopping";
-
-function renderCourseEditList() {
-  const items = checklistData.courses[selectedEditCourse];
-  renderEditList(
-    "course-items-list",
-    items,
-    (idx) => { items.splice(idx, 1); saveChecklistData(); renderCourseEditList(); },
-    (idx) => { swapItems(items, idx, idx - 1); saveChecklistData(); renderCourseEditList(); },
-    (idx) => { swapItems(items, idx, idx + 1); saveChecklistData(); renderCourseEditList(); }
-  );
-}
-
-document.querySelectorAll("#course-edit-tabs .segmented-btn").forEach(btn => {
-  btn.classList.toggle("active", btn.dataset.course === selectedEditCourse);
-  btn.addEventListener("click", () => {
-    selectedEditCourse = btn.dataset.course;
-    document.querySelectorAll("#course-edit-tabs .segmented-btn").forEach(b => {
-      b.classList.toggle("active", b.dataset.course === selectedEditCourse);
-    });
-    renderCourseEditList();
-  });
-});
-
 document.getElementById("common-add-btn").addEventListener("click", () => {
   const input = document.getElementById("common-add-input");
   const val = input.value.trim();
@@ -290,15 +284,122 @@ document.getElementById("common-add-btn").addEventListener("click", () => {
   renderCommonEditList();
 });
 
+// コース別チェック項目の編集(タブ切り替え)
+
+let selectedEditCourse = checklistData.courseOrder[0];
+
+function renderCourseTabs() {
+  const container = document.getElementById("course-edit-tabs");
+  container.innerHTML = "";
+  checklistData.courseOrder.forEach(id => {
+    const meta = checklistData.courseMeta[id];
+    const btn = document.createElement("button");
+    btn.className = "segmented-btn";
+    btn.dataset.course = id;
+    btn.textContent = `${meta.icon} ${meta.label}`;
+    if (id === selectedEditCourse) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      selectedEditCourse = id;
+      renderCourseTabs();
+      renderCourseEditList();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function renderCourseEditList() {
+  const items = checklistData.courseItems[selectedEditCourse];
+  renderEditList(
+    "course-items-list",
+    items,
+    (idx) => { items.splice(idx, 1); saveChecklistData(); renderCourseEditList(); },
+    (idx) => { swapItems(items, idx, idx - 1); saveChecklistData(); renderCourseEditList(); },
+    (idx) => { swapItems(items, idx, idx + 1); saveChecklistData(); renderCourseEditList(); }
+  );
+  updateCourseDeleteButton();
+}
+
+function updateCourseDeleteButton() {
+  const btn = document.getElementById("course-delete-btn");
+  btn.disabled = checklistData.courseOrder.length <= 1;
+}
+
 document.getElementById("course-add-btn").addEventListener("click", () => {
   const input = document.getElementById("course-add-input");
   const val = input.value.trim();
   if (!val) return;
-  checklistData.courses[selectedEditCourse].push(val);
+  checklistData.courseItems[selectedEditCourse].push(val);
   input.value = "";
   saveChecklistData();
   renderCourseEditList();
 });
 
+document.getElementById("course-delete-btn").addEventListener("click", () => {
+  if (checklistData.courseOrder.length <= 1) return;
+
+  const session = getActiveSession();
+  if (session && session.courseId === selectedEditCourse) {
+    alert("進行中のコースは削除できません。先にゴールしてから削除してください。");
+    return;
+  }
+
+  const meta = checklistData.courseMeta[selectedEditCourse];
+  const confirmed = confirm(`「${meta.label}」を削除しますか？中の項目もすべて削除されます。`);
+  if (!confirmed) return;
+
+  const deletedId = selectedEditCourse;
+  checklistData.courseOrder = checklistData.courseOrder.filter(id => id !== deletedId);
+  delete checklistData.courseMeta[deletedId];
+  delete checklistData.courseItems[deletedId];
+  saveChecklistData();
+
+  selectedEditCourse = checklistData.courseOrder[0];
+  renderCourseTabs();
+  renderCourseEditList();
+  renderHome();
+});
+
+// 新しいコースの追加(アイコンは用意した絵文字リストから選択)
+
+const newCourseIconChoices = ["🛒", "🏥", "🚶", "🎉", "💇", "🏦", "🏫", "🚗", "🐕", "🏋️", "🍽️", "🎨", "🎵", "✈️", "🌳", "⚽"];
+let selectedNewCourseIcon = newCourseIconChoices[0];
+
+function renderNewCourseIconPicker() {
+  const container = document.getElementById("new-course-icon-picker");
+  container.innerHTML = "";
+  newCourseIconChoices.forEach(icon => {
+    const btn = document.createElement("button");
+    btn.className = "icon-choice-btn";
+    btn.textContent = icon;
+    btn.type = "button";
+    if (icon === selectedNewCourseIcon) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      selectedNewCourseIcon = icon;
+      renderNewCourseIconPicker();
+    });
+    container.appendChild(btn);
+  });
+}
+
+document.getElementById("new-course-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("new-course-name-input");
+  const name = input.value.trim();
+  if (!name) return;
+
+  const newId = "course_" + Date.now();
+  checklistData.courseMeta[newId] = { label: name, icon: selectedNewCourseIcon };
+  checklistData.courseItems[newId] = [];
+  checklistData.courseOrder.push(newId);
+  saveChecklistData();
+
+  input.value = "";
+  selectedEditCourse = newId;
+  renderHome();
+  renderCourseTabs();
+  renderCourseEditList();
+});
+
 renderCommonEditList();
+renderCourseTabs();
 renderCourseEditList();
+renderNewCourseIconPicker();
