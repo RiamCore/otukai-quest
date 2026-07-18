@@ -80,16 +80,19 @@
     </div>
 
     <p class="setting-label">コース別チェック項目</p>
-    <div class="segmented" id="course-edit-tabs">
-      <button class="segmented-btn" data-course="shopping">買い物</button>
-      <button class="segmented-btn" data-course="hospital">病院</button>
-      <button class="segmented-btn" data-course="walk">散歩</button>
-      <button class="segmented-btn" data-course="outing">お出かけ</button>
-    </div>
+    <div class="segmented" id="course-edit-tabs"></div>
     <div id="course-items-list" class="edit-list"></div>
     <div class="add-row">
       <input type="text" id="course-add-input" placeholder="新しい項目名" maxlength="20">
       <button id="course-add-btn" class="add-btn">＋追加</button>
+    </div>
+    <button id="course-delete-btn" class="text-btn-danger">このコースを削除</button>
+
+    <p class="setting-label">新しいコースを追加</p>
+    <div class="icon-picker" id="new-course-icon-picker"></div>
+    <div class="add-row">
+      <input type="text" id="new-course-name-input" placeholder="コース名" maxlength="10">
+      <button id="new-course-add-btn" class="add-btn">＋コース追加</button>
     </div>
   </div>
 </section>

@@ -274,6 +274,41 @@ h1 {
   color: #fff;
 }
 
+.text-btn-danger {
+  display: block;
+  margin: 4px 0 8px;
+  padding: 10px 0;
+  font-size: 15px;
+  color: #C0392B;
+  background: transparent;
+  border: none;
+  text-align: left;
+}
+
+.text-btn-danger:disabled {
+  color: var(--text-muted);
+}
+
+.icon-picker {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.icon-choice-btn {
+  height: 48px;
+  font-size: 22px;
+  background: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.icon-choice-btn.active {
+  border-color: var(--accent);
+  background: var(--bg);
+}
+
 .edit-list {
   display: flex;
   flex-direction: column;
