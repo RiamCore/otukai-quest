@@ -400,6 +400,7 @@ h1 {
 .frequent-select {
   width: 100%;
   height: 56px;
+  min-height: 56px;
   font-size: 18px;
   padding: 0 14px;
   border: 2px solid var(--accent);
@@ -409,47 +410,15 @@ h1 {
   font-weight: 700;
 }
 
-.expiry-banner {
-  margin-top: 10px;
-}
-
 .date-input {
   height: 52px;
+  min-height: 52px;
   font-size: 17px;
   padding: 0 14px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
   background: var(--surface);
   color: var(--text);
-}
-
-.expiry-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: var(--check-height);
-  padding: 0 18px;
-  border: 2px solid var(--border-color);
-  border-radius: 14px;
-  background: var(--surface);
-  margin-bottom: 10px;
-}
-
-.expiry-item-name {
-  flex: 1;
-  font-size: var(--check-font);
-  color: var(--text);
-}
-
-.expiry-item-status {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.expiry-item-status.expiry-urgent {
-  color: #C0392B;
 }
 
 .date-input {
@@ -497,7 +466,7 @@ h1 {
 
 .edit-item-name {
   flex: 1;
-  font-size: 18px;
+  font-size: var(--check-font);
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -533,8 +502,10 @@ h1 {
   flex-direction: column;
 }
 
-.add-row-stacked input {
+.add-row-stacked input,
+.add-row-stacked select {
   flex: none;
+  width: 100%;
 }
 
 .add-row input {

@@ -212,6 +212,10 @@ function showScreen(name) {
 }
 
 document.getElementById("btn-start").addEventListener("click", () => {
+  if (currentCourseId === "shopping") {
+    shoppingList.forEach(item => { item.checked = false; });
+    saveShoppingList();
+  }
   setActiveSession(currentCourseId);
   updateHomeShoppingButton();
   showScreen("departure");
@@ -454,101 +458,6 @@ document.getElementById("frequent-add-btn").addEventListener("click", () => {
 renderFrequentEditList();
 
 // 賞味期限管理(商品名+実日付を登録し、残り日数を表示)
-
-function loadExpiryItems() {
-  const raw = localStorage.getItem("expiryItems");
-  return raw ? JSON.parse(raw) : [];
-}
-
-function saveExpiryItems() {
-  localStorage.setItem("expiryItems", JSON.stringify(expiryItems));
-}
-
-let expiryItems = loadExpiryItems();
-
-function daysUntil(dateStr) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(dateStr + "T00:00:00");
-  return Math.round((target - today) / 86400000);
-}
-
-function renderExpiryList() {
-  const container = document.getElementById("expiry-items-list");
-  container.innerHTML = "";
-
-  if (expiryItems.length === 0) {
-    const p = document.createElement("p");
-    p.className = "sub";
-    p.textContent = "登録された商品はありません。";
-    container.appendChild(p);
-    return;
-  }
-
-  const sortedIndexes = expiryItems
-    .map((item, idx) => idx)
-    .sort((a, b) => daysUntil(expiryItems[a].date) - daysUntil(expiryItems[b].date));
-
-  sortedIndexes.forEach(idx => {
-    const item = expiryItems[idx];
-    const days = daysUntil(item.date);
-
-    const row = document.createElement("div");
-    row.className = "expiry-item";
-
-    const nameSpan = document.createElement("span");
-    nameSpan.className = "expiry-item-name";
-    nameSpan.textContent = item.name;
-    row.appendChild(nameSpan);
-
-    const statusSpan = document.createElement("span");
-    statusSpan.className = "expiry-item-status";
-    if (days < 0) {
-      statusSpan.textContent = "期限切れ";
-      statusSpan.classList.add("expiry-urgent");
-    } else if (days === 0) {
-      statusSpan.textContent = "本日まで";
-      statusSpan.classList.add("expiry-urgent");
-    } else {
-      statusSpan.textContent = `あと${days}日`;
-      if (days <= 3) statusSpan.classList.add("expiry-urgent");
-    }
-    row.appendChild(statusSpan);
-
-    const delBtn = document.createElement("button");
-    delBtn.className = "edit-icon-btn edit-delete";
-    delBtn.textContent = "✕";
-    delBtn.addEventListener("click", () => {
-      expiryItems.splice(idx, 1);
-      saveExpiryItems();
-      renderExpiryList();
-    });
-    row.appendChild(delBtn);
-
-    container.appendChild(row);
-  });
-}
-
-document.getElementById("expiry-add-btn").addEventListener("click", () => {
-  const nameInput = document.getElementById("expiry-name-input");
-  const dateInput = document.getElementById("expiry-date-input");
-  const name = nameInput.value.trim();
-  const date = dateInput.value;
-  if (!name || !date) return;
-  expiryItems.push({ name, date });
-  nameInput.value = "";
-  dateInput.value = "";
-  saveExpiryItems();
-  renderExpiryList();
-});
-
-document.getElementById("btn-expiry-back").addEventListener("click", () => showScreen("home"));
-document.getElementById("btn-home-expiry").addEventListener("click", () => {
-  renderExpiryList();
-  showScreen("expiry-list");
-});
-
-// 賞味期限管理
 
 function loadExpirationItems() {
   const raw = localStorage.getItem("expirationItems");
