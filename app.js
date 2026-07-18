@@ -128,6 +128,7 @@ document.getElementById("dialog-continue").addEventListener("click", () => {
 document.getElementById("dialog-discard").addEventListener("click", () => {
   hideConfirmDialog();
   clearActiveSession();
+  updateHomeShoppingButton();
   if (pendingCourseId) {
     openChecklist(pendingCourseId);
     pendingCourseId = null;
@@ -166,6 +167,21 @@ function openChecklist(courseId) {
   const body = document.getElementById("checklist-body");
   body.innerHTML = "";
 
+  if (courseId === "shopping") {
+    const shopBtn = document.createElement("button");
+    shopBtn.className = "shopping-list-entry-btn";
+    shopBtn.textContent = "🛒 買い物リスト";
+    shopBtn.addEventListener("click", () => {
+      if (shoppingList.length === 0) {
+        document.getElementById("shopping-input-textarea").value = "";
+        showScreen("shopping-input");
+      } else {
+        openShoppingEdit("checklist");
+      }
+    });
+    body.appendChild(shopBtn);
+  }
+
   const allItems = [...checklistData.common, ...courseItems];
   allItems.forEach(name => body.appendChild(makeCheckItem(name)));
 
@@ -202,11 +218,13 @@ function showScreen(name) {
 
 document.getElementById("btn-start").addEventListener("click", () => {
   setActiveSession(currentCourseId);
+  updateHomeShoppingButton();
   showScreen("departure");
 });
 document.getElementById("btn-departure-ok").addEventListener("click", () => showScreen("home"));
 document.getElementById("btn-goal-ok").addEventListener("click", () => {
   clearActiveSession();
+  updateHomeShoppingButton();
   showScreen("home");
 });
 document.getElementById("btn-back-home").addEventListener("click", () => showScreen("home"));
@@ -219,6 +237,7 @@ const existingSession = getActiveSession();
 if (existingSession) {
   showGoalScreen(existingSession.courseId);
 }
+updateHomeShoppingButton();
 
 // 設定画面: 項目の追加・削除・並び替え
 
@@ -403,3 +422,123 @@ renderCommonEditList();
 renderCourseTabs();
 renderCourseEditList();
 renderNewCourseIconPicker();
+
+// 買い物リスト(自由入力のメモ)。localStorageに保存し、編集画面と閲覧(チェック)画面の2つを持つ
+
+function loadShoppingList() {
+  const raw = localStorage.getItem("shoppingList");
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveShoppingList() {
+  localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+}
+
+let shoppingList = loadShoppingList();
+let shoppingListReturnScreen = "checklist";
+
+function renderShoppingEditList() {
+  const container = document.getElementById("shopping-edit-list");
+  container.innerHTML = "";
+  shoppingList.forEach((item, idx) => {
+    const row = document.createElement("div");
+    row.className = "edit-item";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "edit-item-name";
+    nameSpan.textContent = item.name;
+    row.appendChild(nameSpan);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "edit-icon-btn edit-delete";
+    delBtn.textContent = "✕";
+    delBtn.addEventListener("click", () => {
+      shoppingList.splice(idx, 1);
+      saveShoppingList();
+      renderShoppingEditList();
+    });
+    row.appendChild(delBtn);
+
+    container.appendChild(row);
+  });
+}
+
+function renderShoppingViewList() {
+  const container = document.getElementById("shopping-view-list");
+  container.innerHTML = "";
+
+  if (shoppingList.length === 0) {
+    const p = document.createElement("p");
+    p.className = "sub";
+    p.textContent = "リストが空です。「編集」から追加してください。";
+    container.appendChild(p);
+    return;
+  }
+
+  shoppingList.forEach((item) => {
+    const label = document.createElement("label");
+    label.className = "check-item";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = item.checked;
+    input.addEventListener("change", () => {
+      item.checked = input.checked;
+      saveShoppingList();
+    });
+    label.appendChild(input);
+
+    const span = document.createElement("span");
+    span.textContent = item.name;
+    label.appendChild(span);
+
+    container.appendChild(label);
+  });
+}
+
+function openShoppingEdit(returnTo) {
+  shoppingListReturnScreen = returnTo;
+  renderShoppingEditList();
+  showScreen("shopping-edit");
+}
+
+function updateHomeShoppingButton() {
+  const session = getActiveSession();
+  const show = !!(session && session.courseId === "shopping");
+  document.getElementById("btn-home-shopping-list").classList.toggle("is-hidden", !show);
+}
+
+document.getElementById("shopping-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("shopping-add-input");
+  const val = input.value.trim();
+  if (!val) return;
+  shoppingList.push({ name: val, checked: false });
+  input.value = "";
+  saveShoppingList();
+  renderShoppingEditList();
+});
+
+document.getElementById("btn-shopping-edit-done").addEventListener("click", () => {
+  if (shoppingListReturnScreen === "shopping-view") renderShoppingViewList();
+  showScreen(shoppingListReturnScreen);
+});
+
+document.getElementById("btn-shopping-view-back").addEventListener("click", () => showScreen("home"));
+document.getElementById("btn-shopping-view-edit").addEventListener("click", () => openShoppingEdit("shopping-view"));
+
+document.getElementById("btn-home-shopping-list").addEventListener("click", () => {
+  renderShoppingViewList();
+  showScreen("shopping-view");
+});
+
+document.getElementById("btn-shopping-input-back").addEventListener("click", () => showScreen("checklist"));
+
+document.getElementById("btn-shopping-input-done").addEventListener("click", () => {
+  const textarea = document.getElementById("shopping-input-textarea");
+  const lines = textarea.value.split("\n").map(s => s.trim()).filter(s => s.length > 0);
+  shoppingList = lines.map(name => ({ name, checked: false }));
+  saveShoppingList();
+  showScreen("checklist");
+});
+
+updateHomeShoppingButton();
