@@ -394,6 +394,10 @@ h1 {
   flex-direction: column;
 }
 
+.add-row-stacked input {
+  flex: none;
+}
+
 .add-row input {
   flex: 1;
   min-width: 0;
