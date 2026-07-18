@@ -19,6 +19,8 @@
       <h1>お出かけクエスト</h1>
       <p class="sub">今日は何をしますか？</p>
       <button class="shopping-list-banner" id="btn-home-shopping-list">🛒 買い物リストを見る</button>
+      <button class="shopping-list-banner expiry-banner" id="btn-home-expiry">📅 賞味期限を見る</button>
+      <button class="shopping-list-banner" id="btn-home-expiration">🗓 賞味期限を見る</button>
     </div>
     <nav class="course-list" id="course-list">
       <!-- JSでコースボタンを描画 -->
@@ -134,6 +136,40 @@
   </div>
 </section>
 
+<!-- 賞味期限画面 -->
+<section id="screen-expiration" class="screen hidden">
+  <div class="page">
+    <button class="back-btn" id="btn-expiration-back">← ホームへ</button>
+    <h1>賞味期限</h1>
+    <div id="expiration-list"></div>
+
+    <p class="setting-label">新しく登録する</p>
+    <select id="expiration-frequent-select" class="frequent-select">
+      <option value="" disabled selected>よく使う商品から選ぶ(任意)</option>
+    </select>
+    <div class="add-row add-row-stacked" style="margin-top: 10px;">
+      <input type="text" id="expiration-name-input" placeholder="商品名" maxlength="20">
+      <input type="date" id="expiration-date-input" class="date-input">
+      <button id="expiration-add-btn" class="add-btn">＋登録</button>
+    </div>
+  </div>
+</section>
+
+<!-- 賞味期限一覧・登録画面 -->
+<section id="screen-expiry-list" class="screen hidden">
+  <div class="page">
+    <button class="back-btn" id="btn-expiry-back">← ホームへ</button>
+    <h1>賞味期限</h1>
+    <div id="expiry-items-list"></div>
+    <p class="setting-label">新しく登録</p>
+    <div class="add-row add-row-stacked">
+      <input type="text" id="expiry-name-input" placeholder="商品名" maxlength="20">
+      <input type="date" id="expiry-date-input" class="date-input">
+      <button id="expiry-add-btn" class="add-btn">＋登録</button>
+    </div>
+  </div>
+</section>
+
 <!-- 進行中コース確認ダイアログ -->
 <div id="dialog-overlay" class="dialog-overlay hidden">
   <div class="dialog-box">
@@ -145,6 +181,6 @@
   </div>
 </div>
 
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

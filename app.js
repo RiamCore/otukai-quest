@@ -453,6 +453,212 @@ document.getElementById("frequent-add-btn").addEventListener("click", () => {
 
 renderFrequentEditList();
 
+// 賞味期限管理(商品名+実日付を登録し、残り日数を表示)
+
+function loadExpiryItems() {
+  const raw = localStorage.getItem("expiryItems");
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveExpiryItems() {
+  localStorage.setItem("expiryItems", JSON.stringify(expiryItems));
+}
+
+let expiryItems = loadExpiryItems();
+
+function daysUntil(dateStr) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(dateStr + "T00:00:00");
+  return Math.round((target - today) / 86400000);
+}
+
+function renderExpiryList() {
+  const container = document.getElementById("expiry-items-list");
+  container.innerHTML = "";
+
+  if (expiryItems.length === 0) {
+    const p = document.createElement("p");
+    p.className = "sub";
+    p.textContent = "登録された商品はありません。";
+    container.appendChild(p);
+    return;
+  }
+
+  const sortedIndexes = expiryItems
+    .map((item, idx) => idx)
+    .sort((a, b) => daysUntil(expiryItems[a].date) - daysUntil(expiryItems[b].date));
+
+  sortedIndexes.forEach(idx => {
+    const item = expiryItems[idx];
+    const days = daysUntil(item.date);
+
+    const row = document.createElement("div");
+    row.className = "expiry-item";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "expiry-item-name";
+    nameSpan.textContent = item.name;
+    row.appendChild(nameSpan);
+
+    const statusSpan = document.createElement("span");
+    statusSpan.className = "expiry-item-status";
+    if (days < 0) {
+      statusSpan.textContent = "期限切れ";
+      statusSpan.classList.add("expiry-urgent");
+    } else if (days === 0) {
+      statusSpan.textContent = "本日まで";
+      statusSpan.classList.add("expiry-urgent");
+    } else {
+      statusSpan.textContent = `あと${days}日`;
+      if (days <= 3) statusSpan.classList.add("expiry-urgent");
+    }
+    row.appendChild(statusSpan);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "edit-icon-btn edit-delete";
+    delBtn.textContent = "✕";
+    delBtn.addEventListener("click", () => {
+      expiryItems.splice(idx, 1);
+      saveExpiryItems();
+      renderExpiryList();
+    });
+    row.appendChild(delBtn);
+
+    container.appendChild(row);
+  });
+}
+
+document.getElementById("expiry-add-btn").addEventListener("click", () => {
+  const nameInput = document.getElementById("expiry-name-input");
+  const dateInput = document.getElementById("expiry-date-input");
+  const name = nameInput.value.trim();
+  const date = dateInput.value;
+  if (!name || !date) return;
+  expiryItems.push({ name, date });
+  nameInput.value = "";
+  dateInput.value = "";
+  saveExpiryItems();
+  renderExpiryList();
+});
+
+document.getElementById("btn-expiry-back").addEventListener("click", () => showScreen("home"));
+document.getElementById("btn-home-expiry").addEventListener("click", () => {
+  renderExpiryList();
+  showScreen("expiry-list");
+});
+
+// 賞味期限管理
+
+function loadExpirationItems() {
+  const raw = localStorage.getItem("expirationItems");
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveExpirationItems() {
+  localStorage.setItem("expirationItems", JSON.stringify(expirationItems));
+}
+
+let expirationItems = loadExpirationItems();
+
+function daysUntil(dateStr) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(dateStr + "T00:00:00");
+  return Math.round((target - today) / 86400000);
+}
+
+function expirationLabel(days) {
+  if (days < 0) return "期限切れ";
+  if (days === 0) return "本日まで";
+  return `あと${days}日`;
+}
+
+function renderExpirationList() {
+  const container = document.getElementById("expiration-list");
+  container.innerHTML = "";
+
+  if (expirationItems.length === 0) {
+    const p = document.createElement("p");
+    p.className = "sub";
+    p.textContent = "登録された賞味期限はありません。";
+    container.appendChild(p);
+    return;
+  }
+
+  const sorted = [...expirationItems].sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
+
+  sorted.forEach(item => {
+    const days = daysUntil(item.date);
+    const row = document.createElement("div");
+    row.className = "edit-item expiration-item";
+    if (days < 0) row.classList.add("expiration-overdue");
+    else if (days <= 2) row.classList.add("expiration-soon");
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "edit-item-name";
+    nameSpan.textContent = item.name;
+    row.appendChild(nameSpan);
+
+    const daysSpan = document.createElement("span");
+    daysSpan.className = "expiration-days";
+    daysSpan.textContent = expirationLabel(days);
+    row.appendChild(daysSpan);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "edit-icon-btn edit-delete";
+    delBtn.textContent = "✕";
+    delBtn.addEventListener("click", () => {
+      const idx = expirationItems.indexOf(item);
+      if (idx !== -1) expirationItems.splice(idx, 1);
+      saveExpirationItems();
+      renderExpirationList();
+    });
+    row.appendChild(delBtn);
+
+    container.appendChild(row);
+  });
+}
+
+function renderExpirationFrequentSelect() {
+  const select = document.getElementById("expiration-frequent-select");
+  select.innerHTML = '<option value="" disabled selected>よく使う商品から選ぶ(任意)</option>';
+  frequentItems.forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+document.getElementById("expiration-frequent-select").addEventListener("change", (e) => {
+  if (e.target.value) {
+    document.getElementById("expiration-name-input").value = e.target.value;
+  }
+});
+
+document.getElementById("expiration-add-btn").addEventListener("click", () => {
+  const nameInput = document.getElementById("expiration-name-input");
+  const dateInput = document.getElementById("expiration-date-input");
+  const name = nameInput.value.trim();
+  const date = dateInput.value;
+  if (!name || !date) return;
+  expirationItems.push({ name, date });
+  saveExpirationItems();
+  nameInput.value = "";
+  dateInput.value = "";
+  document.getElementById("expiration-frequent-select").value = "";
+  renderExpirationList();
+});
+
+document.getElementById("btn-home-expiration").addEventListener("click", () => {
+  renderExpirationList();
+  renderExpirationFrequentSelect();
+  showScreen("expiration");
+});
+
+document.getElementById("btn-expiration-back").addEventListener("click", () => showScreen("home"));
+
 // 買い物リスト(自由入力のメモ)。localStorageに保存し、編集画面と閲覧(チェック)画面の2つを持つ
 
 function loadShoppingList() {

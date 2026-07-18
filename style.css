@@ -409,6 +409,74 @@ h1 {
   font-weight: 700;
 }
 
+.expiry-banner {
+  margin-top: 10px;
+}
+
+.date-input {
+  height: 52px;
+  font-size: 17px;
+  padding: 0 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.expiry-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--check-height);
+  padding: 0 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--surface);
+  margin-bottom: 10px;
+}
+
+.expiry-item-name {
+  flex: 1;
+  font-size: var(--check-font);
+  color: var(--text);
+}
+
+.expiry-item-status {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.expiry-item-status.expiry-urgent {
+  color: #C0392B;
+}
+
+.date-input {
+  height: 52px;
+  font-size: 17px;
+  padding: 0 14px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.expiration-days {
+  flex-shrink: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.expiration-item.expiration-soon .expiration-days {
+  color: #D98A20;
+}
+
+.expiration-item.expiration-overdue .expiration-days {
+  color: #C0392B;
+}
+
 .edit-list {
   display: flex;
   flex-direction: column;
