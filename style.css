@@ -502,8 +502,8 @@ h1 {
   flex-direction: column;
 }
 
-.add-row-stacked input,
-.add-row-stacked select {
+.add-row.add-row-stacked input,
+.add-row.add-row-stacked select {
   flex: none;
   width: 100%;
 }
