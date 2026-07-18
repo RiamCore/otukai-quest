@@ -13,15 +13,17 @@
 
 <!-- ホーム画面 -->
 <section id="screen-home" class="screen">
-  <div class="page">
-    <header class="home-header">
-      <h1>お出かけクエスト</h1>
+  <div class="home-page">
+    <div class="home-fixed-header">
+      <div class="home-title-row">
+        <h1>お出かけクエスト</h1>
+        <button class="settings-icon-btn" id="btn-settings" aria-label="設定">⚙</button>
+      </div>
       <p class="sub">今日は何をしますか？</p>
-    </header>
+    </div>
     <nav class="course-list" id="course-list">
       <!-- JSでコースボタンを描画 -->
     </nav>
-    <button class="settings-btn" id="btn-settings">設定</button>
   </div>
 </section>
 
@@ -108,6 +110,6 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

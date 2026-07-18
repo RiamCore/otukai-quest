@@ -58,6 +58,7 @@ html, body {
   color: var(--text);
   font-family: -apple-system, "Hiragino Sans", sans-serif;
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
 .screen {
@@ -99,15 +100,54 @@ h1 {
   margin: 0 0 24px;
 }
 
-.home-header {
-  margin-top: 12px;
+.home-page {
+  max-width: 480px;
+  margin: 0 auto;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.home-fixed-header {
+  flex-shrink: 0;
+  padding: max(24px, env(safe-area-inset-top)) 20px 0;
+}
+
+.home-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home-title-row h1 {
+  margin: 8px 0 0;
+  text-align: left;
+}
+
+.settings-icon-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  font-size: 22px;
+  background: var(--surface);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  color: var(--text);
 }
 
 .course-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-top: 8px;
+  margin: 8px 0 0;
+  padding: 4px 20px calc(24px + env(safe-area-inset-bottom));
 }
 
 .course-btn {
@@ -131,15 +171,6 @@ h1 {
 .course-icon {
   font-size: var(--icon-font);
   line-height: 1;
-}
-
-.settings-btn {
-  margin-top: 20px;
-  height: 56px;
-  font-size: 17px;
-  color: var(--text-secondary);
-  background: transparent;
-  border: none;
 }
 
 .back-btn {
@@ -291,13 +322,14 @@ h1 {
 
 .icon-picker {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 10px;
 }
 
 .icon-choice-btn {
   height: 48px;
+  min-width: 0;
   font-size: 22px;
   background: var(--surface);
   border: 2px solid var(--border-color);

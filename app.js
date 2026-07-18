@@ -361,7 +361,7 @@ document.getElementById("course-delete-btn").addEventListener("click", () => {
 
 // 新しいコースの追加(アイコンは用意した絵文字リストから選択)
 
-const newCourseIconChoices = ["🛒", "🏥", "🚶", "🎉", "💇", "🏦", "🏫", "🚗", "🐕", "🏋️", "🍽️", "🎨", "🎵", "✈️", "🌳", "⚽"];
+const newCourseIconChoices = ["🛒", "🏥", "🚶", "🎉", "💇", "🏦", "🏫", "🚗", "🐕", "🏋️", "🍽️", "🍱", "🎨", "🎵", "✈️", "🌳", "⚽"];
 let selectedNewCourseIcon = newCourseIconChoices[0];
 
 function renderNewCourseIconPicker() {
