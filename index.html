@@ -89,23 +89,19 @@
     </div>
     <button id="course-delete-btn" class="text-btn-danger">このコースを削除</button>
 
+    <p class="setting-label">よく使う商品</p>
+    <div id="frequent-items-list" class="edit-list"></div>
+    <div class="add-row">
+      <input type="text" id="frequent-add-input" placeholder="商品名" maxlength="20">
+      <button id="frequent-add-btn" class="add-btn">＋追加</button>
+    </div>
+
     <p class="setting-label">新しいコースを追加</p>
     <div class="icon-picker" id="new-course-icon-picker"></div>
     <div class="add-row add-row-stacked">
       <input type="text" id="new-course-name-input" placeholder="コース名" maxlength="10">
       <button id="new-course-add-btn" class="add-btn">＋コース追加</button>
     </div>
-  </div>
-</section>
-
-<!-- 買い物リスト一括入力画面(最初の1回) -->
-<section id="screen-shopping-input" class="screen hidden">
-  <div class="page">
-    <button class="back-btn" id="btn-shopping-input-back">← 戻る</button>
-    <h1>買い物リスト</h1>
-    <p class="sub">1行に1つずつ、買うものを入力してください</p>
-    <textarea id="shopping-input-textarea" class="shopping-textarea" placeholder="卵&#10;牛乳&#10;パン"></textarea>
-    <button class="primary-btn" id="btn-shopping-input-done">完成</button>
   </div>
 </section>
 
@@ -119,6 +115,10 @@
       <input type="text" id="shopping-add-input" placeholder="商品名" maxlength="20">
       <button id="shopping-add-btn" class="add-btn">＋追加</button>
     </div>
+    <p class="setting-label">よく使う商品から選ぶ</p>
+    <select id="shopping-frequent-select" class="frequent-select">
+      <option value="" disabled selected>タップして選ぶ</option>
+    </select>
   </div>
 </section>
 
@@ -145,6 +145,6 @@
   </div>
 </div>
 
-<script src="app.js?v=5"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

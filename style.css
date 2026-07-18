@@ -397,18 +397,16 @@ h1 {
   display: none;
 }
 
-.shopping-textarea {
+.frequent-select {
   width: 100%;
-  min-height: 240px;
-  font-size: var(--check-font);
-  font-family: inherit;
-  padding: 16px;
-  border: 2px solid var(--border-color);
+  height: 56px;
+  font-size: 18px;
+  padding: 0 14px;
+  border: 2px solid var(--accent);
   border-radius: 14px;
   background: var(--surface);
-  color: var(--text);
-  resize: vertical;
-  margin: 4px 0 20px;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .edit-list {

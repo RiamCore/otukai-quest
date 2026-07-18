@@ -172,12 +172,7 @@ function openChecklist(courseId) {
     shopBtn.className = "shopping-list-entry-btn";
     shopBtn.textContent = "🛒 買い物リスト";
     shopBtn.addEventListener("click", () => {
-      if (shoppingList.length === 0) {
-        document.getElementById("shopping-input-textarea").value = "";
-        showScreen("shopping-input");
-      } else {
-        openShoppingEdit("checklist");
-      }
+      openShoppingEdit("checklist");
     });
     body.appendChild(shopBtn);
   }
@@ -423,6 +418,41 @@ renderCourseTabs();
 renderCourseEditList();
 renderNewCourseIconPicker();
 
+// よく使う商品(買い物リストのプルダウン用マスターリスト)。localStorageに保存し、設定画面で編集可能にする
+
+function loadFrequentItems() {
+  const raw = localStorage.getItem("frequentItems");
+  return raw ? JSON.parse(raw) : [];
+}
+
+function saveFrequentItems() {
+  localStorage.setItem("frequentItems", JSON.stringify(frequentItems));
+}
+
+let frequentItems = loadFrequentItems();
+
+function renderFrequentEditList() {
+  renderEditList(
+    "frequent-items-list",
+    frequentItems,
+    (idx) => { frequentItems.splice(idx, 1); saveFrequentItems(); renderFrequentEditList(); },
+    (idx) => { swapItems(frequentItems, idx, idx - 1); saveFrequentItems(); renderFrequentEditList(); },
+    (idx) => { swapItems(frequentItems, idx, idx + 1); saveFrequentItems(); renderFrequentEditList(); }
+  );
+}
+
+document.getElementById("frequent-add-btn").addEventListener("click", () => {
+  const input = document.getElementById("frequent-add-input");
+  const val = input.value.trim();
+  if (!val) return;
+  frequentItems.push(val);
+  input.value = "";
+  saveFrequentItems();
+  renderFrequentEditList();
+});
+
+renderFrequentEditList();
+
 // 買い物リスト(自由入力のメモ)。localStorageに保存し、編集画面と閲覧(チェック)画面の2つを持つ
 
 function loadShoppingList() {
@@ -496,9 +526,30 @@ function renderShoppingViewList() {
   });
 }
 
+function renderShoppingFrequentSelect() {
+  const select = document.getElementById("shopping-frequent-select");
+  select.innerHTML = '<option value="" disabled selected>タップして選ぶ</option>';
+  frequentItems.forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+document.getElementById("shopping-frequent-select").addEventListener("change", (e) => {
+  const val = e.target.value;
+  if (!val) return;
+  shoppingList.push({ name: val, checked: false });
+  saveShoppingList();
+  renderShoppingEditList();
+  e.target.value = "";
+});
+
 function openShoppingEdit(returnTo) {
   shoppingListReturnScreen = returnTo;
   renderShoppingEditList();
+  renderShoppingFrequentSelect();
   showScreen("shopping-edit");
 }
 
@@ -529,16 +580,6 @@ document.getElementById("btn-shopping-view-edit").addEventListener("click", () =
 document.getElementById("btn-home-shopping-list").addEventListener("click", () => {
   renderShoppingViewList();
   showScreen("shopping-view");
-});
-
-document.getElementById("btn-shopping-input-back").addEventListener("click", () => showScreen("checklist"));
-
-document.getElementById("btn-shopping-input-done").addEventListener("click", () => {
-  const textarea = document.getElementById("shopping-input-textarea");
-  const lines = textarea.value.split("\n").map(s => s.trim()).filter(s => s.length > 0);
-  shoppingList = lines.map(name => ({ name, checked: false }));
-  saveShoppingList();
-  showScreen("checklist");
 });
 
 updateHomeShoppingButton();
