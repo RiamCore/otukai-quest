@@ -127,6 +127,10 @@ h1 {
   text-align: left;
 }
 
+.home-fixed-header .sub {
+  text-align: left;
+}
+
 .settings-icon-btn {
   width: 44px;
   height: 44px;
@@ -155,6 +159,7 @@ h1 {
   align-items: center;
   gap: 18px;
   height: var(--btn-height);
+  flex-shrink: 0;
   padding: 0 24px;
   font-size: var(--btn-font);
   font-weight: 700;
@@ -393,8 +398,13 @@ h1 {
   margin-bottom: 8px;
 }
 
+.add-row-stacked {
+  flex-direction: column;
+}
+
 .add-row input {
   flex: 1;
+  min-width: 0;
   height: 52px;
   font-size: 17px;
   padding: 0 14px;
@@ -405,6 +415,7 @@ h1 {
 }
 
 .add-btn {
+  flex-shrink: 0;
   height: 52px;
   padding: 0 18px;
   font-size: 17px;
