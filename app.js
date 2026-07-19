@@ -203,7 +203,7 @@ function makeCheckItem(name) {
 
 function updateStartButton() {
   const boxes = document.querySelectorAll("#checklist-body input[type=checkbox]");
-  const allChecked = boxes.length > 0 && Array.from(boxes).every(b => b.checked);
+  const allChecked = Array.from(boxes).every(b => b.checked);
   document.getElementById("btn-start").disabled = !allChecked;
 }
 

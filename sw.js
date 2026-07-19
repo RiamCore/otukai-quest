@@ -2,13 +2,13 @@
 //
 // ファイルの中身を更新した時は、必ずこのCACHE_NAMEの数字を1つ上げてください。
 // (index.html・style.css・app.jsのどれか1つでも変えたら、ここも変更が必要です)
-const CACHE_NAME = "okake-quest-v2";
+const CACHE_NAME = "okake-quest-v3";
 
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./style.css",
-  "./app.js?v=10",
+  "./app.js?v=11",
 ];
 
 self.addEventListener("install", (event) => {
