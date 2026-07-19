@@ -482,6 +482,14 @@ function expirationLabel(days) {
   return `あと${days}日`;
 }
 
+function todayISODate() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function renderExpirationList() {
   const container = document.getElementById("expiration-list");
   container.innerHTML = "";
@@ -554,7 +562,7 @@ document.getElementById("expiration-add-btn").addEventListener("click", () => {
   expirationItems.push({ name, date });
   saveExpirationItems();
   nameInput.value = "";
-  dateInput.value = "";
+  dateInput.value = todayISODate();
   document.getElementById("expiration-frequent-select").value = "";
   renderExpirationList();
 });
@@ -562,6 +570,7 @@ document.getElementById("expiration-add-btn").addEventListener("click", () => {
 document.getElementById("btn-home-expiration").addEventListener("click", () => {
   renderExpirationList();
   renderExpirationFrequentSelect();
+  document.getElementById("expiration-date-input").value = todayISODate();
   showScreen("expiration");
 });
 

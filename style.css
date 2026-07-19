@@ -401,7 +401,7 @@ h1 {
   width: 100%;
   height: 56px;
   min-height: 56px;
-  font-size: 18px;
+  font-size: var(--check-font);
   padding: 0 14px;
   border: 2px solid var(--accent);
   border-radius: 14px;
@@ -411,19 +411,12 @@ h1 {
 }
 
 .date-input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: 52px;
   min-height: 52px;
-  font-size: 17px;
-  padding: 0 14px;
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  background: var(--surface);
-  color: var(--text);
-}
-
-.date-input {
-  height: 52px;
-  font-size: 17px;
+  font-size: var(--check-font);
   padding: 0 14px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -512,7 +505,7 @@ h1 {
   flex: 1;
   min-width: 0;
   height: 52px;
-  font-size: 17px;
+  font-size: var(--check-font);
   padding: 0 14px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -524,7 +517,7 @@ h1 {
   flex-shrink: 0;
   height: 52px;
   padding: 0 18px;
-  font-size: 17px;
+  font-size: var(--check-font);
   font-weight: 700;
   color: #fff;
   background: var(--accent);
