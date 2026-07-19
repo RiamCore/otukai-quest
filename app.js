@@ -109,9 +109,9 @@ function attemptOpenCourse(courseId) {
 
 function showConfirmDialog(activeCourseId) {
   const meta = checklistData.courseMeta[activeCourseId];
-  const label = meta ? meta.label : "前回のコース";
+  const label = meta ? meta.label : "前回のお出かけ";
   document.getElementById("dialog-text").textContent =
-    `前回の「${label}」がまだ終わっていません。終わらせてから始めますか？`;
+    `おかえりなさい。前回の「${label}」のお出かけを終わらせますか？`;
   document.getElementById("dialog-overlay").classList.remove("hidden");
 }
 
@@ -129,6 +129,7 @@ document.getElementById("dialog-discard").addEventListener("click", () => {
   hideConfirmDialog();
   clearActiveSession();
   updateHomeShoppingButton();
+  updateHomeArrivedButton();
   if (pendingCourseId) {
     openChecklist(pendingCourseId);
     pendingCourseId = null;
@@ -218,12 +219,14 @@ document.getElementById("btn-start").addEventListener("click", () => {
   }
   setActiveSession(currentCourseId);
   updateHomeShoppingButton();
+  updateHomeArrivedButton();
   showScreen("departure");
 });
 document.getElementById("btn-departure-ok").addEventListener("click", () => showScreen("home"));
 document.getElementById("btn-goal-ok").addEventListener("click", () => {
   clearActiveSession();
   updateHomeShoppingButton();
+  updateHomeArrivedButton();
   showScreen("home");
 });
 document.getElementById("btn-back-home").addEventListener("click", () => showScreen("home"));
@@ -231,12 +234,8 @@ document.getElementById("btn-back-home-2").addEventListener("click", () => showS
 document.getElementById("btn-settings").addEventListener("click", () => showScreen("settings"));
 
 renderHome();
-
-const existingSession = getActiveSession();
-if (existingSession) {
-  showGoalScreen(existingSession.courseId);
-}
 updateHomeShoppingButton();
+updateHomeArrivedButton();
 
 // 設定画面: 項目の追加・削除・並び替え
 
@@ -673,6 +672,16 @@ function updateHomeShoppingButton() {
   const show = !!(session && session.courseId === "shopping");
   document.getElementById("btn-home-shopping-list").classList.toggle("is-hidden", !show);
 }
+
+function updateHomeArrivedButton() {
+  const session = getActiveSession();
+  document.getElementById("btn-home-arrived").classList.toggle("is-hidden", !session);
+}
+
+document.getElementById("btn-home-arrived").addEventListener("click", () => {
+  const session = getActiveSession();
+  if (session) showGoalScreen(session.courseId);
+});
 
 document.getElementById("shopping-add-btn").addEventListener("click", () => {
   const input = document.getElementById("shopping-add-input");

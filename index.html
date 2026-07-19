@@ -18,6 +18,7 @@
       <button class="settings-icon-btn" id="btn-settings" aria-label="設定">⚙</button>
       <h1>お出かけクエスト</h1>
       <p class="sub">今日は何をしますか？</p>
+      <button class="shopping-list-banner" id="btn-home-arrived">🏠 帰宅しました</button>
       <button class="shopping-list-banner" id="btn-home-shopping-list">🛒 買い物リストを見る</button>
       <button class="shopping-list-banner" id="btn-home-expiration">🗓 賞味期限を見る</button>
     </div>
@@ -159,13 +160,13 @@
   <div class="dialog-box">
     <p class="dialog-text" id="dialog-text"></p>
     <div class="dialog-buttons">
-      <button id="dialog-continue" class="dialog-btn dialog-btn-primary">続ける</button>
-      <button id="dialog-discard" class="dialog-btn">破棄して新しく始める</button>
+      <button id="dialog-continue" class="dialog-btn dialog-btn-primary">終わらせる</button>
+      <button id="dialog-discard" class="dialog-btn">新しく始める</button>
     </div>
   </div>
 </div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
